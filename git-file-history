@@ -26,25 +26,21 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-source "$(git --exec-path)/git-sh-setup"
+. "$(git --exec-path)/git-sh-setup"
 
-function _usage() {
-    echo "Usage: `basename $0` /path/to/file"
+_usage() {
+    echo "Usage: $(basename $0) /path/to/file"
     exit 1
 }
 
-function _filehistory() {
-    repo=$(basename $(git rev-parse --show-toplevel))
-
-    if [[ $# == 1 ]]; then
+_filehistory() {
+    repo="$(basename $(git rev-parse --show-toplevel))"
+    if [ $# -eq 1 ]; then
         use_mailmap=""
-
-        if [[ -e "$repo/.mailmap" ]]; then
+        if [ -e "$repo/.mailmap" ]; then
             use_mailmap="--use-mailmap"
         fi
-
         opts="--pretty=email --patch-with-stat --reverse --full-index --binary -m --first-parent"
-
         git log $use_mailmap $opts -- $1 | git_pager
     else
         _usage
